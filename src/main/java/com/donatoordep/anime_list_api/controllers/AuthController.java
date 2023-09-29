@@ -4,6 +4,7 @@ import com.donatoordep.anime_list_api.dto.request.AuthenticationRequestDTO;
 import com.donatoordep.anime_list_api.dto.request.UserRequestDTO;
 import com.donatoordep.anime_list_api.dto.response.AuthenticationResponseDTO;
 import com.donatoordep.anime_list_api.dto.response.UserResponseDTO;
+import com.donatoordep.anime_list_api.entities.Code;
 import com.donatoordep.anime_list_api.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,11 @@ public class AuthController {
     @PostMapping(path = "/login")
     public ResponseEntity<AuthenticationResponseDTO> login(@Valid @RequestBody AuthenticationRequestDTO dto) {
         return ResponseEntity.ok().body(service.login(dto));
+    }
+
+    @PostMapping(path = "/verify")
+    public void verifyAccount(Code code) {
+        service.verifyAccount(code.getCode());
+        ResponseEntity.ok();
     }
 }

@@ -49,6 +49,7 @@ public class WebSecurityConfig {
                     /* /auth */
                     authorize.requestMatchers(HttpMethod.POST, "/v1/auth/register").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/v1/auth/login").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/v1/auth/verify").permitAll();
                     /* /users */
                     authorize.requestMatchers(HttpMethod.GET, "/v1/users").authenticated();
                     authorize.requestMatchers(HttpMethod.GET, "/v1/users/me").authenticated();

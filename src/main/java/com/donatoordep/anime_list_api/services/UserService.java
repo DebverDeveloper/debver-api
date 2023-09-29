@@ -1,14 +1,13 @@
 package com.donatoordep.anime_list_api.services;
 
 import com.auth0.jwt.JWT;
-import com.donatoordep.anime_list_api.builders.UserBuilder;
 import com.donatoordep.anime_list_api.builders.dto.response.AuthenticationResponseDTOBuilder;
 import com.donatoordep.anime_list_api.dto.request.AuthenticationRequestDTO;
 import com.donatoordep.anime_list_api.dto.request.UserRequestDTO;
 import com.donatoordep.anime_list_api.dto.response.AuthenticationResponseDTO;
 import com.donatoordep.anime_list_api.dto.response.CartResponseDTO;
 import com.donatoordep.anime_list_api.dto.response.UserResponseDTO;
-import com.donatoordep.anime_list_api.entities.*;
+import com.donatoordep.anime_list_api.entities.User;
 import com.donatoordep.anime_list_api.enums.RoleName;
 import com.donatoordep.anime_list_api.mapper.UserMapper;
 import com.donatoordep.anime_list_api.repositories.UserRepository;
@@ -17,8 +16,9 @@ import com.donatoordep.anime_list_api.services.business.rules.user.findByName.Fi
 import com.donatoordep.anime_list_api.services.business.rules.user.findByName.FindByNameValidation;
 import com.donatoordep.anime_list_api.services.business.rules.user.register.RegisterUserArgs;
 import com.donatoordep.anime_list_api.services.business.rules.user.register.RegisterUserValidation;
-import com.donatoordep.anime_list_api.services.exceptions.NotFoundEntityException;
 import com.donatoordep.anime_list_api.utils.ConvertingType;
+import jakarta.mail.MessagingException;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +58,9 @@ public class UserService {
     @Autowired
     private List<FindByNameValidation> findByNameValidations;
 
+    @Autowired
+    private MailService mailService;
+
     @Transactional(readOnly = true)
     public Page<UserResponseDTO> findByName(String name, Pageable pageable) {
 
@@ -91,6 +94,25 @@ public class UserService {
                 repository.save(copyDataUserRequestDTOForUserEntity(dto)));
     }
 
+    public void verifyAccount(String code) {
+        if (repository.findByCode(code).getVerificationCode() != null) {
+            User user = repository.findByCode(code);
+            user.setEnabled(true);
+            repository.save(user);
+        }
+    }
+
+    private void sendVerificationEmail(User user) throws MessagingException {
+        String content = String.format("Please verify your email!!\nCode verification: %s",
+                user.getVerificationCode());
+
+        mailService.sendEmailToClient("Code", user.getEmail(), content);
+    }
+
+    private String generateCode() {
+        return RandomStringUtils.randomAlphabetic(64);
+    }
+
     @Transactional(readOnly = true)
     public UserResponseDTO me(User user) {
         return mapper.convertUserToUserResponseDTO(user);
@@ -105,7 +127,7 @@ public class UserService {
         return new CartResponseDTO((user.getCart()));
     }
 
-    private User copyDataUserRequestDTOForUserEntity(UserRequestDTO dto){
+    private User copyDataUserRequestDTOForUserEntity(UserRequestDTO dto) {
 
         User user = mapper.convertUserRequestDTOToUser(dto);
         user.setPassword(encoder.encode(user.getPassword()));
