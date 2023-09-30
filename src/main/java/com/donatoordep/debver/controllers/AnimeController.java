@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping(path = "/v1/anime")
 public class AnimeController {
