@@ -18,6 +18,7 @@ import com.donatoordep.anime_list_api.services.exceptions.NotFoundEntityExceptio
 import com.donatoordep.anime_list_api.services.exceptions.UserExistsInDatabaseException;
 import com.donatoordep.anime_list_api.services.exceptions.WeakPasswordException;
 import com.donatoordep.anime_list_api.utils.ConvertingType;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,9 @@ public class UserServiceTest {
     @Mock
     UserMapper userMapper;
 
+    @Mock
+    MailService mailService;
+
     @InjectMocks
     UserService service;
 
@@ -89,7 +93,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("GivenUserRequestDTO When Register Is Called Should Return UserResponseDTO")
-    void testGivenUserRequestDTO_When_RegisterIsCalled_ShouldReturn_UserResponseDTO() {
+    void testGivenUserRequestDTO_When_RegisterIsCalled_ShouldReturn_UserResponseDTO() throws MessagingException {
 
         when(userMapper.convertUserRequestDTOToUser(userRequestDTO)).thenReturn(user);
         when(userMapper.convertUserToUserResponseDTO(repository.save(user))).thenReturn(userResponseDTO);
@@ -103,7 +107,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Given User Object When Email Exists Throw UserExistsInDatabaseException")
-    void testGivenUserObject_When_EmailExists_ThrowUserExistsInDatabaseException() {
+    void testGivenUserObject_When_EmailExists_ThrowUserExistsInDatabaseException() throws MessagingException {
 
         when(userMapper.convertUserRequestDTOToUser(userRequestDTO)).thenReturn(user);
         when(service.register(userRequestDTO)).thenThrow(UserExistsInDatabaseException.class);
@@ -114,7 +118,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Given User Object When Password Size < 8 Throw WeakPasswordException")
-    void testGivenUserObject_When_PasswordSizeLessFive_Throw_WeakPasswordException() {
+    void testGivenUserObject_When_PasswordSizeLessFive_Throw_WeakPasswordException() throws MessagingException {
 
         userRequestDTO.setPassword("123");
         user.setPassword("123");

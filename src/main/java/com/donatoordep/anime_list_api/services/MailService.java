@@ -18,7 +18,6 @@ public class MailService {
     @Value("${support.mail}")
     private String supportMail;
 
-    @Bean
     public void sendEmailToClient(String subject, String email, String content) throws MessagingException {
 
         MimeMessage mimeMessage = sender.createMimeMessage();

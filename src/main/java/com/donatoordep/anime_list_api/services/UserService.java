@@ -7,6 +7,7 @@ import com.donatoordep.anime_list_api.dto.request.UserRequestDTO;
 import com.donatoordep.anime_list_api.dto.response.AuthenticationResponseDTO;
 import com.donatoordep.anime_list_api.dto.response.CartResponseDTO;
 import com.donatoordep.anime_list_api.dto.response.UserResponseDTO;
+import com.donatoordep.anime_list_api.entities.Code;
 import com.donatoordep.anime_list_api.entities.User;
 import com.donatoordep.anime_list_api.enums.RoleName;
 import com.donatoordep.anime_list_api.mapper.UserMapper;
@@ -16,6 +17,7 @@ import com.donatoordep.anime_list_api.services.business.rules.user.findByName.Fi
 import com.donatoordep.anime_list_api.services.business.rules.user.findByName.FindByNameValidation;
 import com.donatoordep.anime_list_api.services.business.rules.user.register.RegisterUserArgs;
 import com.donatoordep.anime_list_api.services.business.rules.user.register.RegisterUserValidation;
+import com.donatoordep.anime_list_api.services.exceptions.CodeNotValidException;
 import com.donatoordep.anime_list_api.utils.ConvertingType;
 import jakarta.mail.MessagingException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -86,20 +88,35 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO register(UserRequestDTO dto) {
+    public UserResponseDTO register(UserRequestDTO dto) throws MessagingException {
 
         userRegisterValidations.forEach(v -> v.verification(new RegisterUserArgs(dto, repository)));
+        User user = mapper.convertUserRequestDTOToUser(dto);
+        user.setEnabled(false);
+        user.setVerificationCode(generateCode());
 
-        return mapper.convertUserToUserResponseDTO(
-                repository.save(copyDataUserRequestDTOForUserEntity(dto)));
+        user.setPassword(encoder.encode(user.getPassword()));
+
+        user.setRoles(roleService.separateRolesWithHierarchy(
+                ConvertingType.convertStringToEnum(RoleName.class, dto.getRole())));
+
+        UserResponseDTO responseDTO = mapper.convertUserToUserResponseDTO(repository.save(user));
+
+        sendVerificationEmail(user);
+
+        return responseDTO;
     }
 
-    public void verifyAccount(String code) {
-        if (repository.findByCode(code).getVerificationCode() != null) {
-            User user = repository.findByCode(code);
+    @Transactional
+    public Code verifyAccount(Code code) {
+        User user = repository.findByCode(code.getCode());
+        if (user != null) {
             user.setEnabled(true);
             repository.save(user);
+        } else {
+            throw new CodeNotValidException();
         }
+        return code;
     }
 
     private void sendVerificationEmail(User user) throws MessagingException {
@@ -125,15 +142,5 @@ public class UserService {
     @Transactional(readOnly = true)
     public CartResponseDTO myCart(User user) {
         return new CartResponseDTO((user.getCart()));
-    }
-
-    private User copyDataUserRequestDTOForUserEntity(UserRequestDTO dto) {
-
-        User user = mapper.convertUserRequestDTOToUser(dto);
-        user.setPassword(encoder.encode(user.getPassword()));
-
-        user.setRoles(roleService.separateRolesWithHierarchy(
-                ConvertingType.convertStringToEnum(RoleName.class, dto.getRole())));
-        return user;
     }
 }

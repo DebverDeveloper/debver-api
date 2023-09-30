@@ -1,6 +1,5 @@
 package com.donatoordep.anime_list_api.dto.request;
 
-import com.donatoordep.anime_list_api.entities.Categories;
 import com.donatoordep.anime_list_api.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

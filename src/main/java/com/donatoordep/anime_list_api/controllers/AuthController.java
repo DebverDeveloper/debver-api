@@ -6,6 +6,7 @@ import com.donatoordep.anime_list_api.dto.response.AuthenticationResponseDTO;
 import com.donatoordep.anime_list_api.dto.response.UserResponseDTO;
 import com.donatoordep.anime_list_api.entities.Code;
 import com.donatoordep.anime_list_api.services.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class AuthController {
     private UserService service;
 
     @PostMapping(path = "/register")
-    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO dto) {
+    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO dto) throws MessagingException {
         UserResponseDTO objectCreated = service.register(dto);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(objectCreated.getId()).toUri()).body(objectCreated);
@@ -35,8 +36,7 @@ public class AuthController {
     }
 
     @PostMapping(path = "/verify")
-    public void verifyAccount(Code code) {
-        service.verifyAccount(code.getCode());
-        ResponseEntity.ok();
+    public ResponseEntity<Code> verifyAccount(@Valid @RequestBody Code code) {
+        return ResponseEntity.ok().body(service.verifyAccount(code));
     }
 }

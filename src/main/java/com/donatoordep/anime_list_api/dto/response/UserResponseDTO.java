@@ -1,5 +1,6 @@
 package com.donatoordep.anime_list_api.dto.response;
 
+import com.donatoordep.anime_list_api.builders.dto.response.ProfileUserResponseDTOBuilder;
 import com.donatoordep.anime_list_api.dto.RoleDTO;
 import com.donatoordep.anime_list_api.entities.User;
 
@@ -19,6 +20,13 @@ public class UserResponseDTO {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.profile = ProfileUserResponseDTOBuilder.builder()
+                .bio(user.getProfile().getBio())
+                .imgUrl(user.getProfile().getImgUrl())
+                .accountStats(user.getProfile().getAnimeStats())
+                .build();
+        this.cart = new CartResponseDTO(user.getCart());
+        this.roles = user.getRoles().stream().map(RoleDTO::new).toList();
     }
 
     public UserResponseDTO() {

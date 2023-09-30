@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.donatoordep</groupId>
-    <artifactId>anime-list-api</artifactId>
+    <artifactId>debver-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>anime-list-api</name>
-    <description>Api desenvolvida para a aplicação &quot;Anime List&quot;</description>
+    <name>debver</name>
+    <description>Api desenvolvida para a aplicação &quot;Debver&quot;</description>
     <properties>
         <java.version>17</java.version>
         <maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>

@@ -49,6 +49,12 @@ public class ControllerExceptionHandler {
         return handlingException(e, HttpStatus.UNPROCESSABLE_ENTITY, request.getRequestURI());
     }
 
+    @ExceptionHandler(CodeNotValidException.class)
+    public ResponseEntity<CustomizedException> codeNotValid(
+            CodeNotValidException e, HttpServletRequest request) {
+        return handlingException(e, HttpStatus.BAD_REQUEST, request.getRequestURI());
+    }
+
     @ExceptionHandler(InvalidEnumValueException.class)
     public ResponseEntity<CustomizedException> invalidEnumValue(
             InvalidEnumValueException e, HttpServletRequest request) {
