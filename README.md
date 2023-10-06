@@ -69,30 +69,30 @@ java -jar anime-list-api-0.0.1-SNAPSHOT.jar
 
 ### Swagger-ui
 Acesse pelo navegador para acessar a documentação do Swagger.
-* /anime-api/swagger-ui/index.html
+* /swagger-ui/index.html
 
 ### Autenticação
-* **POST** /anime-api/v1/auth/register: Criação de uma nova conta de usuário.
-* **POST** /anime-api/v1/auth/login: Autenticação do usuário e geração de token JWT.
+* **POST** /v1/auth/register: Criação de uma nova conta de usuário.
+* **POST** /v1/auth/login: Autenticação do usuário e geração de token JWT.
 
 ### Usuário
-* **GET** /anime-api/v1/users?name={name}: Obtenção das informações de um usuário pelo **nome**.
-* **GET** /anime-api/v1/users/me: Visualização do próprio perfil.
-* **GET** /anime-api/v1/users/my-cart: Visualização do próprio carrinho.
+* **GET** /v1/users?name={name}: Obtenção das informações de um usuário pelo **nome**.
+* **GET** /v1/users/me: Visualização do próprio perfil.
+* **GET** /v1/users/my-cart: Visualização do próprio carrinho.
 
 ### Anime
-* **POST** /anime-api/v1/anime: Criação de um novo anime.
-* **GET** /anime-api/v1/anime?name={name}: Obtenção das informações de um anime pelo **nome**.
-* **GET** /anime-api/v1/anime/all: Obtenção **paginada** dos animes registrados.
-* **GET** /anime-api/v1/anime/{id}: Obtenção das informações de um anime pelo **id**.
+* **POST** /v1/anime: Criação de um novo anime.
+* **GET** /v1/anime?name={name}: Obtenção das informações de um anime pelo **nome**.
+* **GET** /v1/anime/all: Obtenção **paginada** dos animes registrados.
+* **GET** /v1/anime/{id}: Obtenção das informações de um anime pelo **id**.
 
 ### Order
-* **POST** /anime-api/v1/orders: Adiciona um anime no carrinho do usuário.
+* **POST** /v1/orders: Adiciona um anime no carrinho do usuário.
 
 ## Exemplos de uso
 1. Registrar um novo usuário
 ```txt
-POST /anime-api/v1/auth/register
+POST /v1/auth/register
 Content-Type: application/json
 ```
 ```json
@@ -111,7 +111,7 @@ Obs: Caso a chave "role" não seja incluída no registro, ele será registrado c
 
 2. Autenticar usuário.
 ```txt
-POST /anime-api/v1/auth/login
+POST /v1/auth/login
 Content-Type: application/json
 ```
 ```json
@@ -122,25 +122,25 @@ Content-Type: application/json
 ```
 3. Obter usuário pelo nome.
 ```txt
-GET /anime-api/v1/users?name=vitor
+GET /v1/users?name=vitor
 Authorization: Bearer seu_token_jwt
 Content-Type: application/json
 ```
 4. Visualizar o próprio perfil.
 ```txt
-GET /anime-api/v1/users/me
+GET /v1/users/me
 Authorization: Bearer seu_token_jwt
 Content-Type: application/json
 ```
 5. Visualizar o próprio carrinho.
 ```txt
-GET /anime-api/v1/users/my-cart
+GET /v1/users/my-cart
 Authorization: Bearer seu_token_jwt
 Content-Type: application/json
 ```
 6. Criação de um novo anime.
 ```txt
-POST /anime-api/v1/anime
+POST /v1/anime
 Authorization: Bearer seu_token_jwt
 Content-Type: application/json
 ```
@@ -156,22 +156,22 @@ Content-Type: application/json
 ```
 7. Buscar anime pelo nome.
 ```txt
-GET /anime-api/v1/anime?name=100
+GET /v1/anime?name=100
 Content-Type: application/json
 ```
 8. Buscar todos os animes **paginados**.
 ```txt
-GET /anime-api/v1/anime/all
+GET /v1/anime/all
 Content-Type: application/json
 ```
 9. Buscar anime pelo id.
 ```txt
-GET /anime-api/v1/anime/{id}
+GET /v1/anime/{id}
 Content-Type: application/json
 ```
 10. Adicionar anime no carrinho do usuário.
 ```txt
-POST /anime-api/v1/orders
+POST /v1/orders
 Authorization: Bearer seu_token_jwt
 Content-Type: application/json
 ```
@@ -204,5 +204,5 @@ Caso surjam dúvidas ou problemas, sinta-se à vontade para entrar em contato co
 Divirta-se utilizando a API de Gerenciamento de Animes!
 
 ## Autor
-Conheça mais sobre o autor do projeto:
+Conheça mais sobre os autores do projeto:
 [https://www.linkedin.com/in/pedro-donato-a9aa42246/](https://www.linkedin.com/in/pedro-donato-a9aa42246/)
