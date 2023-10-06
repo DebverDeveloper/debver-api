@@ -18,7 +18,7 @@ Essa API foi desenvolvida como parte do ecossistema da plataforma DEBVER, que te
 4. [Exemplos de Uso](#exemplos-de-uso)
 5. [Tecnologias Utilizadas](#tecnologias-utilizadas)
 6. [Considerações Finais](#considerações-finais)
-7. [Autor](#autor)
+7. [Autores](#autor)
 
 ## Visão Geral
 A API de Gerenciamento de Animes foi criada para atender às necessidades da plataforma DEBVER. Ela permite que os usuários gerenciem suas listas de animes assistidos, em andamento e desejados. A API oferece recursos de autenticação e autorização, permitindo que os usuários se registrem, façam login e acessem apenas os recursos autorizados.
