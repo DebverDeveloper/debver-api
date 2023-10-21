@@ -17,7 +17,8 @@ import com.donatoordep.debver.services.business.rules.user.findByName.FindByName
 import com.donatoordep.debver.services.business.rules.user.findByName.FindByNameValidation;
 import com.donatoordep.debver.services.business.rules.user.register.RegisterUserArgs;
 import com.donatoordep.debver.services.business.rules.user.register.RegisterUserValidation;
-import com.donatoordep.debver.services.exceptions.CodeNotValidException;
+import com.donatoordep.debver.services.business.rules.user.verifyAccount.VerifyAccountArgs;
+import com.donatoordep.debver.services.business.rules.user.verifyAccount.VerifyAccountValidations;
 import com.donatoordep.debver.utils.ConvertingType;
 import jakarta.mail.MessagingException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -55,19 +56,21 @@ public class UserService {
     private TokenJWTService tokenJWTService;
 
     @Autowired
+    private MailService mailService;
+
+    @Autowired
     private List<RegisterUserValidation> userRegisterValidations;
 
     @Autowired
     private List<FindByNameValidation> findByNameValidations;
 
     @Autowired
-    private MailService mailService;
+    private List<VerifyAccountValidations> verifyAccountValidations;
 
     @Transactional(readOnly = true)
     public Page<UserResponseDTO> findByName(String name, Pageable pageable) {
 
-        findByNameValidations.forEach(v -> v.verification(
-                new FindByNameArgs(repository, name, pageable)));
+        findByNameValidations.forEach(v -> v.verification(new FindByNameArgs(repository, name, pageable)));
 
         return mapper.convertUserPageToUserResponseDTOPage(repository.findByName(name, pageable));
     }
@@ -91,8 +94,8 @@ public class UserService {
     public UserResponseDTO register(UserRequestDTO dto) throws MessagingException {
 
         userRegisterValidations.forEach(v -> v.verification(new RegisterUserArgs(dto, repository)));
+
         User user = mapper.convertUserRequestDTOToUser(dto);
-        user.setEnabled(false);
         user.setVerificationCode(generateCode());
 
         user.setPassword(encoder.encode(user.getPassword()));
@@ -109,20 +112,12 @@ public class UserService {
 
     @Transactional
     public Code verifyAccount(Code code) {
-        User user = repository.findByCode(code.getCode());
-        if (user != null) {
-            user.setEnabled(true);
-            repository.save(user);
-        } else {
-            throw new CodeNotValidException();
-        }
+        verifyAccountValidations.forEach(v -> v.verification(new VerifyAccountArgs(repository, code)));
         return code;
     }
 
     private void sendVerificationEmail(User user) throws MessagingException {
-        String content = String.format("Please verify your email!!\nCode verification: %s",
-                user.getVerificationCode());
-
+        String content = String.format("Code verification: %s", user.getVerificationCode());
         mailService.sendEmailToClient("Code", user.getEmail(), content);
     }
 

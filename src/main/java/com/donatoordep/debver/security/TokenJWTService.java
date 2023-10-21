@@ -33,7 +33,7 @@ public class TokenJWTService {
     }
 
     public Instant generateExpirationDateToken() {
-        return LocalDateTime.now().plusHours(168).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(24).toInstant(ZoneOffset.of("-03:00"));
     }
 
     private Algorithm algorithm() {

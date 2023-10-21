@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @Column(name = "verification_code", length = 64)
     private String verificationCode;
 
-    private boolean enabled;
+    private boolean enabled = false;
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

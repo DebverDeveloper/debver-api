@@ -11,15 +11,10 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 @Component
-public class ConvertingType {
+public abstract class ConvertingType {
 
-    @Autowired
-    private CategoriesRepository categoriesRepository;
-
-    private ConvertingType() {
-    }
-
-    public static String listToString(List<? extends Enum<?>> enums) { // role_admin, role_client
+    // role_admin, role_client, role_moderator
+    public static String listToString(List<? extends Enum<?>> enums) {
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, enums.size())
                 .forEach(i -> {
